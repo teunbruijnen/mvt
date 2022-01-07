@@ -117,10 +117,16 @@ class Packages(AndroidExtraction):
                 uid = None
 
             dumpsys = self._adb_command(f"dumpsys package {package_name} | grep -A2 timeStamp").split("\n")
-            timestamp = dumpsys[0].split("=")[1].strip()
-            first_install = dumpsys[1].split("=")[1].strip()
-            last_update = dumpsys[2].split("=")[1].strip()
-
+            
+            try:
+                timestamp = dumpsys[0].split("=")[1].strip()
+                first_install = dumpsys[1].split("=")[1].strip()
+                last_update = dumpsys[2].split("=")[1].strip()
+            except IndexError:
+                timestamp = None
+                first_install = None
+                last_update = None
+                
             package_files = self._get_files_for_package(package_name)
 
             self.results.append({
